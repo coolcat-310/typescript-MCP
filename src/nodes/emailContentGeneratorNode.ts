@@ -27,13 +27,12 @@ const generateEmailContent = async (model: supportedModelTypes, state: z.infer<t
 };
 
 
-export const createEmailContentGeneratorNode = async (
+export const emailContentGeneratorNode = async (
   model: supportedModelTypes,
-  state: z.infer<typeof generateEmailStateSchema>
 ) => {
   return {
     id: 'emailContentGeneratorNode',
-    run: withValidation(generateEmailStateSchema, (state) => generateEmailContent(model, state)),
+    run: withValidation(generateEmailStateSchema, (state: z.infer<typeof generateEmailStateSchema>) => generateEmailContent(model, state)),
     ends: []
   };
 }
