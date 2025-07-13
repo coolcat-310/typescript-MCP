@@ -13,7 +13,9 @@ export async function generateEmailTemplate(modelArg: ModelProvider) {
     tone: "Professional",
     audience: "Client",
     purpose: "Provide updates on project status and next steps.",
-    // Add other required properties if needed, e.g. tone, audience, etc.
+    researchURLs: [
+      "https://www.endpoint.com/",
+    ]
   };
   const runName = "email-template-generation";
 

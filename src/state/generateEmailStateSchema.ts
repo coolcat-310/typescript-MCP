@@ -14,6 +14,8 @@ export const generateEmailStateSchema = z.object({
   emailSignature: z.string().optional(),
   generatedEmail: z.string().optional(),
   error: z.string().optional(),
+  researchSummary: z.string().optional(),
+  researchURLs: z.array(z.string()).optional(),
 });
 
 export type GenerateEmailState = z.infer<typeof generateEmailStateSchema>;

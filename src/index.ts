@@ -11,7 +11,7 @@ async function main() {
       await generateEmailTemplate(modelArg);
       break;
     default:
-      console.log("Usage: yarn start email | task");
+      console.log("Usage: yarn start email <model-provider>");
       process.exit(1);
   }
 }
