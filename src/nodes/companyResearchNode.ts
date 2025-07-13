@@ -12,7 +12,6 @@ async function generateCompanyResearch(
 
   for (const url of researchURLs) {
     try {
-      // Use fireCrawlMCP.scrapeCompanyWebsite to get content for each URL
       const result = await fireCrawlMCP(url);
       console.log({ result });
       findings.push(`URL: ${url}\n${result}`);
