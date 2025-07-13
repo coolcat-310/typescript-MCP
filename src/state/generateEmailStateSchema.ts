@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const generateEmailStateSchema = z.object({
-  userInput: z.string().optional(),
+  userInput: z.string().min(1, "User input is required"),
   tone: z.string().optional(),
   audience: z.string().optional(),
   purpose: z.string().optional(),
@@ -15,3 +15,5 @@ export const generateEmailStateSchema = z.object({
   generatedEmail: z.string().optional(),
   error: z.string().optional(),
 });
+
+export type GenerateEmailState = z.infer<typeof generateEmailStateSchema>;

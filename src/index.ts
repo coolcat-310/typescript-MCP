@@ -1,7 +1,6 @@
 import "dotenv/config";
-import { runEmailGraph } from "./entrypoints/runEmailGraph";
-import { runTaskGraph } from "./entrypoints/runTaskGraph";
 import { ModelProvider } from "./models/modelResolver";
+import { generateEmailTemplate } from "./entrypoints/generateEmailTemplate";
 
 async function main() {
   const arg = process.argv[2]?.toLowerCase();
@@ -9,13 +8,7 @@ async function main() {
 
   switch (arg) {
     case "email":
-      await runEmailGraph();
-      break;
-    case "task":
-      if (!modelArg) {
-        console.error("Please provide a model argument for task graph.");
-      }
-      await runTaskGraph(modelArg);
+      await generateEmailTemplate(modelArg);
       break;
     default:
       console.log("Usage: yarn start email | task");

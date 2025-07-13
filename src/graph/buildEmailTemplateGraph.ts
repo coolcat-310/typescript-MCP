@@ -13,6 +13,7 @@ export function buildEmailTemplateGraph(model: supportedModelTypes) {
   const taskNode = emailContentGeneratorNode(model);
   graph.addNode(taskNode.id, taskNode.run, { ends: taskNode.ends });
 
+  // @ts-expect-error - LangGraph expects a fixed set of node keys, and dynamic keys cause a type conflict
   graph.addEdge(START, taskNode.id);
 
   return graph.compile();

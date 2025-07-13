@@ -1,19 +1,7 @@
-import z from "zod";
-import { generateEmailStateSchema } from "../state/generateEmailStateSchema";
+import { generateEmailStateSchema, GenerateEmailState } from "../state/generateEmailStateSchema";
 import { supportedModelTypes } from "../types/supportedModelTypes";
 import { withValidation } from "../utility/withValidation";
 
-
-
-export const emailContentGeneratorNode = async (
-  model: supportedModelTypes,
-) => {
-  return {
-    id: 'emailContentGeneratorNode',
-    run: withValidation(generateEmailStateSchema, (state: z.infer<typeof generateEmailStateSchema>) => generateEmailContent(model, state)),
-    ends: []
-  };
-}
 async function generateEmailContent(
   model: supportedModelTypes,
   state: {
@@ -31,7 +19,7 @@ async function generateEmailContent(
     generatedEmail?: string;
     error?: string;
   }
-): Promise<object> {
+): Promise<GenerateEmailState> {
   // Compose the email subject if not provided
   const subject = state.emailSubject ?? `Regarding ${state.purpose ?? "your request"}`;
 
@@ -64,5 +52,25 @@ async function generateEmailContent(
     length: state.emailLength,
   };
 
-  return Promise.resolve(generatedEmail);
+  const myPromise = new Promise((resolve, reject) => {
+        // Simulate an asynchronous operation (e.g., fetching data)
+        setTimeout(() => {
+            resolve(generatedEmail); // Resolve the promise with the data
+        }, 1000);
+    });
+
+  const response = await myPromise;
+
+  return response as GenerateEmailState;
 }
+
+export function emailContentGeneratorNode (
+  model: supportedModelTypes,
+) {
+  return {
+    id: 'emailContentGeneratorNode',
+    run: withValidation(generateEmailStateSchema, (state: GenerateEmailState) => generateEmailContent(model, state)),
+    ends: []
+  };
+}
+
