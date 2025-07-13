@@ -1,4 +1,5 @@
-import { createOllamaModel, createOpenAIModel } from "../models";
+import { createOpenAIModel } from "./openai";
+import { createOllamaModel } from "./ollama";
 
 export type ModelProvider = "openai" | "ollama";
 

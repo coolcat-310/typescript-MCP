@@ -1,16 +1,22 @@
 {
-  "name": "typescript-MCP",
+  "name": "email-generator",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
-  "repository": "https://github.com/coolcat-310/typescript-MCP.git",
+  "repository": "https://github.com/coolcat-310/email-generator.git",
   "author": "juan <navarretejuan09@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "tsx src/index.ts",
+    "start:email": "tsx src/index.ts email",
+    "start:task": "tsx src/index.ts task",
+    "start:task:ollama": "tsx src/index.ts task ollama",
+    "start:task:openai": "tsx src/index.ts task openai",
     "test": "vitest",
-    "lint": "eslint 'src/**/*.ts'"
+    "lint": "eslint 'src/**/*.ts'",
+    "eval": "tsx src/evaluations/evaluators/evaluateEmailGenerator.ts"
   },
- "devDependencies": {
+  "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@types/node": "^22.15.30",
     "@typescript-eslint/eslint-plugin": "^8.33.1",

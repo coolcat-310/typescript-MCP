@@ -1,30 +1,8 @@
-import { z } from 'zod';
+import z from "zod";
 import { generateEmailStateSchema } from "../state/generateEmailStateSchema";
-import { supportedModelTypes } from '../types/supportedModelTypes';
-import { withValidation } from '../utility';
+import { supportedModelTypes } from "../types/supportedModelTypes";
+import { withValidation } from "../utility/withValidation";
 
-
-const generateEmailContent = async (model: supportedModelTypes, state: z.infer<typeof generateEmailStateSchema>) => {
-  const prompt = `Generate an email based on the following details:
-  Subject: ${state.subject}
-  Recipient: ${state.recipient}
-  Body: ${state.body}
-  Tone: ${state.tone || 'neutral'}
-  Length: ${state.length || 'medium'}
-  Additional Instructions: ${state.additionalInstructions || 'none'}
-  
-  Please format the email appropriately.`;
-
-  if ('call' in model && typeof model.call === 'function') {
-    const response = await model.call({ prompt });
-    return { ...state, emailContent: response.text || response };
-  } else if ('generate' in model && typeof model.generate === 'function') {
-    const response = await model.generate([{ role: 'user', content: prompt }]);
-    return { ...state, emailContent: response.generations[0][0].text || response.generations[0][0] };
-  } else {
-    throw new Error('Unsupported model type');
-  }
-};
 
 
 export const emailContentGeneratorNode = async (
@@ -35,4 +13,56 @@ export const emailContentGeneratorNode = async (
     run: withValidation(generateEmailStateSchema, (state: z.infer<typeof generateEmailStateSchema>) => generateEmailContent(model, state)),
     ends: []
   };
+}
+async function generateEmailContent(
+  model: supportedModelTypes,
+  state: {
+    userInput?: string;
+    tone?: string;
+    audience?: string;
+    purpose?: string;
+    additionalContext?: string;
+    emailLength?: string;
+    recipientInfo?: string;
+    emailSubject?: string;
+    emailBody?: string;
+    followUpAction?: string;
+    emailSignature?: string;
+    generatedEmail?: string;
+    error?: string;
+  }
+): Promise<object> {
+  // Compose the email subject if not provided
+  const subject = state.emailSubject ?? `Regarding ${state.purpose ?? "your request"}`;
+
+  // Compose the email body
+  let body = state.emailBody ?? "";
+  if (!body) {
+    body = `Dear ${state.recipientInfo ?? "Recipient"},\n\n`;
+    body += `${state.userInput ?? "I hope this email finds you well."}\n\n`;
+    if (state.additionalContext) {
+      body += `${state.additionalContext}\n\n`;
+    }
+    body += `Purpose: ${state.purpose ?? "General Inquiry"}\n`;
+    if (state.followUpAction) {
+      body += `Next Steps: ${state.followUpAction}\n`;
+    }
+    body += `\n${state.emailSignature ?? "Best regards,\nYour Name"}`;
+  }
+
+  if (state.tone === "formal") {
+    body = body.replace("I hope this email finds you well.", "I trust this message finds you in good health.");
+  } else if (state.tone === "informal") {
+    body = body.replace("I hope this email finds you well.", "Hey there!");
+  }
+
+  const generatedEmail = {
+    subject,
+    body,
+    modelUsed: model,
+    audience: state.audience,
+    length: state.emailLength,
+  };
+
+  return Promise.resolve(generatedEmail);
 }
